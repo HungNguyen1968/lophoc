@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vào lớp học online</title>
+<meta name="robots" content="noindex">
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 16px; box-sizing: border-box;
+         font-family: system-ui, sans-serif; background: #F6F7F4; color: #1C2421; }
+  main { max-width: 380px; width: 100%; background: #fff; border: 1px solid #DDE2DE; border-top: 6px solid #1F3A3D;
+         border-radius: 10px; padding: 28px; text-align: center; }
+  h1 { margin: 0 0 8px; font-size: 22px; color: #1F3A3D; }
+  p { margin: 8px 0; color: #5F6B67; }
+  a.go { display: inline-block; margin-top: 12px; padding: 10px 22px; border-radius: 8px; background: #1F3A3D;
+         color: #fff; text-decoration: none; font-weight: 600; }
+  a.go[hidden] { display: none; }
+  .small { font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Lớp học online</h1>
+  <p id="msg">Đang tìm lớp học…</p>
+  <a class="go" id="go" href="#" hidden>Vào lớp</a>
+  <p class="small" id="when"></p>
+</main>
+<script>
+const DU_PHONG = {"open": true, "url": "https://ourselves-grammar-gospel-llc.trycloudflare.com", "opened": "12:25 ngày 18/10/2026"};
+const API = "https://api.github.com/repos/HungNguyen1968/lophoc/contents/lop.json";
+async function moiNhat() {
+  // Lấy thông tin mới nhất (trang này có thể bị lưu tạm vài phút)
+  try {
+    const r = await fetch(API + "?t=" + Date.now(), { headers: { Accept: "application/vnd.github.raw+json" } });
+    if (r.ok) return await r.json();
+  } catch (e) {}
+  return DU_PHONG;
+}
+moiNhat().then(d => {
+  const when = document.getElementById("when"), go = document.getElementById("go"), msg = document.getElementById("msg");
+  if (d.opened) when.textContent = (d.open ? "Lớp mở lúc " : "Lớp đóng lúc ") + d.opened;
+  if (!d.open || !d.url) {
+    msg.textContent = "Lớp chưa mở. Khi thầy/cô mở lớp, hãy tải lại trang này.";
+    return;
+  }
+  msg.textContent = "Đang chuyển vào lớp…";
+  go.href = d.url; go.hidden = false;
+  location.replace(d.url);
+});
+</script>
+</body>
+</html>
